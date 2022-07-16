@@ -10,6 +10,5 @@
   - cdk tests
   - Lambda tests using mock
 - stack refactor
-- add CfnOutput(Queue URL)
 - a architecture diagram
 - etc...?

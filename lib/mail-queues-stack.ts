@@ -1,4 +1,4 @@
-import { Duration, Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, Duration, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Queue, DeadLetterQueue } from "aws-cdk-lib/aws-sqs";
@@ -120,5 +120,10 @@ export class MailQueuesStack extends Stack {
     });
 
     dlqSizeAlarm.addAlarmAction(new SnsAction(errorTopic));
+
+    new CfnOutput(this, "MailQueueUrl", {
+      value: queue.queueUrl,
+      exportName: `${this.stackName}-MailQueueUrl`,
+    });
   }
 }
