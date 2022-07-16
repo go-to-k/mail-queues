@@ -1,0 +1,384 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot Tests Snapshot test 1`] = `
+Object {
+  "Outputs": Object {
+    "MailQueueUrl": Object {
+      "Export": Object {
+        "Name": "MailQueuesStack-MailQueueUrl",
+      },
+      "Value": Object {
+        "Ref": "MailQueue4F838B3A",
+      },
+    },
+  },
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "AttachedFileBucketC6C49BBC": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "BucketEncryption": Object {
+          "ServerSideEncryptionConfiguration": Array [
+            Object {
+              "ServerSideEncryptionByDefault": Object {
+                "SSEAlgorithm": "aws:kms",
+              },
+            },
+          ],
+        },
+      },
+      "Type": "AWS::S3::Bucket",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "DeadLetterQueue9F481546": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "KmsMasterKeyId": "alias/aws/sqs",
+        "MessageRetentionPeriod": 1209600,
+      },
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "DeadLetterQueueSizeAlarm320E5D34": Object {
+      "Properties": Object {
+        "AlarmActions": Array [
+          Object {
+            "Ref": "ErrorTopicA0904A23",
+          },
+        ],
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "DatapointsToAlarm": 1,
+        "Dimensions": Array [
+          Object {
+            "Name": "QueueName",
+            "Value": Object {
+              "Fn::GetAtt": Array [
+                "DeadLetterQueue9F481546",
+                "QueueName",
+              ],
+            },
+          },
+        ],
+        "EvaluationPeriods": 1,
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Namespace": "AWS/SQS",
+        "Period": 60,
+        "Statistic": "Sum",
+        "Threshold": 1,
+        "TreatMissingData": "notBreaching",
+      },
+      "Type": "AWS::CloudWatch::Alarm",
+    },
+    "ErrorSlackChatbotConfiguration61D027E2": Object {
+      "Properties": Object {
+        "ConfigurationName": "MailQueuesStack",
+        "IamRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "ErrorSlackChatbotConfigurationConfigurationRoleF38BD79A",
+            "Arn",
+          ],
+        },
+        "SlackChannelId": "slackChannelId",
+        "SlackWorkspaceId": "slackWorkspaceId",
+        "SnsTopicArns": Array [
+          Object {
+            "Ref": "ErrorTopicA0904A23",
+          },
+        ],
+      },
+      "Type": "AWS::Chatbot::SlackChannelConfiguration",
+    },
+    "ErrorSlackChatbotConfigurationConfigurationRoleF38BD79A": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "chatbot.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ErrorTopicA0904A23": Object {
+      "Properties": Object {
+        "DisplayName": "ErrorTopic",
+        "TopicName": "ErrorTopic",
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "MailQueue4F838B3A": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "KmsMasterKeyId": "alias/aws/sqs",
+        "ReceiveMessageWaitTimeSeconds": 10,
+        "RedrivePolicy": Object {
+          "deadLetterTargetArn": Object {
+            "Fn::GetAtt": Array [
+              "DeadLetterQueue9F481546",
+              "Arn",
+            ],
+          },
+          "maxReceiveCount": 5,
+        },
+        "VisibilityTimeout": 30,
+      },
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "QueueLockTable78CED995": Object {
+      "DeletionPolicy": "Retain",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "LockMailKey",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "LockMailKey",
+            "KeyType": "HASH",
+          },
+        ],
+        "PointInTimeRecoverySpecification": Object {
+          "PointInTimeRecoveryEnabled": true,
+        },
+        "SSESpecification": Object {
+          "SSEEnabled": false,
+        },
+        "TimeToLiveSpecification": Object {
+          "AttributeName": "ExpirationUnixTime",
+          "Enabled": true,
+        },
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
+    },
+    "mailerE5F4EB7C": Object {
+      "DependsOn": Array [
+        "mailerServiceRoleDefaultPolicyDEC8276C",
+        "mailerServiceRoleF01D1C35",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-northeast-1",
+          },
+          "S3Key": "d05e40680875f33807db4f69bc3f49cd129b351c3526c12ad8d46d71d3c9fe08.zip",
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "ATTACHED_FILE_BUCKET_NAME": Object {
+              "Ref": "AttachedFileBucketC6C49BBC",
+            },
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "QUEUE_LOCK_TABLE_NAME": Object {
+              "Ref": "QueueLockTable78CED995",
+            },
+            "REGION": "ap-northeast-1",
+            "SENDER_ADDRESS": "senderAddress@test.test",
+            "TTL_SEC_FOR_TABLE": "345600",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "mailerServiceRoleF01D1C35",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "mailerServiceRoleDefaultPolicyDEC8276C": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "s3:GetBucket*",
+                "s3:GetObject*",
+                "s3:List*",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "AttachedFileBucketC6C49BBC",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Fn::GetAtt": Array [
+                          "AttachedFileBucketC6C49BBC",
+                          "Arn",
+                        ],
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
+                "dynamodb:GetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:PutItem",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:UpdateItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "QueueLockTable78CED995",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+            Object {
+              "Action": Array [
+                "SES:SendRawEmail",
+                "ses:SendEmail",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "sqs:ChangeMessageVisibility",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes",
+                "sqs:GetQueueUrl",
+                "sqs:ReceiveMessage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "MailQueue4F838B3A",
+                  "Arn",
+                ],
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "mailerServiceRoleDefaultPolicyDEC8276C",
+        "Roles": Array [
+          Object {
+            "Ref": "mailerServiceRoleF01D1C35",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "mailerServiceRoleF01D1C35": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "mailerSqsEventSourceMailQueuesStackMailQueue9C289D8422611485": Object {
+      "Properties": Object {
+        "BatchSize": 5,
+        "EventSourceArn": Object {
+          "Fn::GetAtt": Array [
+            "MailQueue4F838B3A",
+            "Arn",
+          ],
+        },
+        "FunctionName": Object {
+          "Ref": "mailerE5F4EB7C",
+        },
+        "FunctionResponseTypes": Array [
+          "ReportBatchItemFailures",
+        ],
+        "MaximumBatchingWindowInSeconds": 10,
+      },
+      "Type": "AWS::Lambda::EventSourceMapping",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;

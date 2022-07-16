@@ -26,9 +26,9 @@ export class MailQueuesStack extends Stack {
   }
 
   private init(): void {
-    this.slackWorkspaceId = this.node.tryGetContext("slackWorkspaceId");
-    this.slackChannelId = this.node.tryGetContext("slackChannelId");
-    this.senderAddress = this.node.tryGetContext("senderAddress");
+    this.slackWorkspaceId = this.node.tryGetContext("slackWorkspaceId") ?? "";
+    this.slackChannelId = this.node.tryGetContext("slackChannelId") ?? "";
+    this.senderAddress = this.node.tryGetContext("senderAddress") ?? "";
 
     const stackValidator = new StackValidator(
       this.slackWorkspaceId,
