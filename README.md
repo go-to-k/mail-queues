@@ -3,8 +3,6 @@
 ## TODO
 
 - environments in cdk.json -> .env?
+- Lambda tests using mock
 - README statements
-- unit tests
-  - cdk tests
-  - Lambda tests using mock
 - a architecture diagram
