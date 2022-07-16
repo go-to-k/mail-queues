@@ -113,7 +113,7 @@ describe("Validation Tests", () => {
     expect(() => {
       getTemplate(input);
     }).toThrow(
-      /{"issues":\[{"code":"too_small","minimum":1,"type":"string","inclusive":true,"message":"String must contain at least 1 character\(s\)","path":\["slackWorkspaceId"\]}\],"name":"ZodError"}/,
+      /\[AWS::Chatbot::SlackChannelConfiguration\] is missing required property: slackWorkspaceId/,
     );
   });
 
@@ -143,7 +143,7 @@ describe("Validation Tests", () => {
     expect(() => {
       getTemplate(input);
     }).toThrow(
-      /{"issues":\[{"code":"too_small","minimum":1,"type":"string","inclusive":true,"message":"String must contain at least 1 character\(s\)","path":\["slackChannelId"\]}\],"name":"ZodError"}/,
+      /\[AWS::Chatbot::SlackChannelConfiguration\] is missing required property: slackChannelId/,
     );
   });
 
@@ -173,7 +173,7 @@ describe("Validation Tests", () => {
     expect(() => {
       getTemplate(input);
     }).toThrow(
-      /{"issues":\[{"validation":"email","code":"invalid_string","message":"Invalid email","path":\["senderAddress"\]},{"code":"too_small","minimum":1,"type":"string","inclusive":true,"message":"String must contain at least 1 character\(s\)","path":\["senderAddress"\]}\],"name":"ZodError"}/,
+      /{"issues":\[{"code":"invalid_type","expected":"string","received":"undefined","path":\["senderAddress"\],"message":"Required"}\],"name":"ZodError"}/,
     );
   });
 
