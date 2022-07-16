@@ -34,7 +34,7 @@ const attachedFileBucketName = process.env.ATTACHED_FILE_BUCKET_NAME ?? "";
 const ttlSecForTable = process.env.TTL_SEC_FOR_TABLE;
 const senderAddress = process.env.SENDER_ADDRESS;
 
-export const sendMail: SQSHandler = async (event: SQSEvent) => {
+export const handler: SQSHandler = async (event: SQSEvent) => {
   const date = new Date();
   const expirationUnixTime: number = Math.floor(date.getTime() / 1000) + Number(ttlSecForTable);
 
