@@ -12,8 +12,8 @@ import {
   MailAttachmentSchema,
   MailParam,
   MailParamSchema,
-} from "./types/mailParam";
-import { MailRequest, MailRequestSchema } from "./types/mailRequest";
+} from "./types/mail-param";
+import { MailRequest, MailRequestSchema } from "./types/mail-request";
 
 AWS.config.update({ region: process.env.REGION });
 
