@@ -11,6 +11,7 @@ import { SlackChannelConfiguration } from "aws-cdk-lib/aws-chatbot";
 import { Alarm, ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-cloudwatch";
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { StackValidator } from "../validator/stack-validator";
 
 export class MailQueuesStack extends Stack {
   private slackWorkspaceId: string;
@@ -28,6 +29,13 @@ export class MailQueuesStack extends Stack {
     this.slackWorkspaceId = this.node.tryGetContext("slackWorkspaceId");
     this.slackChannelId = this.node.tryGetContext("slackChannelId");
     this.senderAddress = this.node.tryGetContext("senderAddress");
+
+    const stackValidator = new StackValidator(
+      this.slackWorkspaceId,
+      this.slackChannelId,
+      this.senderAddress,
+    );
+    this.node.addValidation(stackValidator);
   }
 
   private create() {
