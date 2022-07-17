@@ -2,7 +2,7 @@ import crypto from "crypto";
 import fs from "fs";
 
 import { SQSBatchItemFailure, SQSBatchResponse, SQSEvent, SQSHandler } from "aws-lambda";
-import * as AWS from "aws-sdk";
+import { SES, S3, DynamoDB, config } from "aws-sdk";
 import nodemailer from "nodemailer";
 
 import "source-map-support/register";
@@ -15,17 +15,17 @@ import {
 } from "./types/mail-param";
 import { MailRequest, MailRequestSchema } from "./types/mail-request";
 
-AWS.config.update({ region: process.env.REGION });
+config.update({ region: process.env.REGION });
 
-const ses = new AWS.SES({
+const ses = new SES({
   apiVersion: "2010-12-01",
 });
 
-const s3 = new AWS.S3({
+const s3 = new S3({
   apiVersion: "2010-12-01",
 });
 
-const docClient = new AWS.DynamoDB.DocumentClient();
+const docClient = new DynamoDB.DocumentClient();
 
 const transporter = nodemailer.createTransport({ SES: ses });
 
@@ -131,7 +131,7 @@ const lockTable = async (lockMailKey: string, expirationUnixTime: number): Promi
     throw new Error("Empty lockMailKey.");
   }
 
-  const params: AWS.DynamoDB.DocumentClient.PutItemInput = {
+  const params: DynamoDB.DocumentClient.PutItemInput = {
     TableName: tableName,
     Item: {
       LockMailKey: lockMailKey,
@@ -161,7 +161,7 @@ const lockTable = async (lockMailKey: string, expirationUnixTime: number): Promi
 };
 
 const unlockTable = async (lockMailKey: string): Promise<boolean> => {
-  const params: AWS.DynamoDB.DocumentClient.DeleteItemInput = {
+  const params: DynamoDB.DocumentClient.DeleteItemInput = {
     TableName: tableName,
     Key: {
       LockMailKey: lockMailKey,
