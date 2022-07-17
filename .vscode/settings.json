@@ -5,6 +5,6 @@
   "editor.formatOnType": true,
   "editor.codeActionsOnSave": ["source.fixAll.eslint"],
   "search.exclude": {},
-  "cSpell.words": ["datapoints"],
+  "cSpell.words": ["datapoints", "drawio"],
   "typescript.preferences.importModuleSpecifier": "relative"
 }
