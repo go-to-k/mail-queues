@@ -8,6 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
+    "test:cov": "jest --coverage=true",
+    "test:upd": "jest --updateSnapshot",
     "cdk": "cdk"
   },
   "devDependencies": {
