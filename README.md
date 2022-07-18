@@ -75,6 +75,8 @@ Your application needs to send messages to SQS based on the following json forma
     - The `(filename)` part of `(mailKey)/(filename)`
     - Do not include the directory part (mailKey).
   - **If the name is not the same as the one uploaded to S3, an error will occur.**
+  - If there are no attached files, this key does not need to be specified.
+    - no key or an empty array value.
 
 ### Sample
 
