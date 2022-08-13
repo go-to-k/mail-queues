@@ -1,10 +1,9 @@
-import { CfnOutput, Duration, Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, Duration, Stack } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
-import { Queue, DeadLetterQueue } from "aws-cdk-lib/aws-sqs";
+import { Queue, QueueEncryption, DeadLetterQueue } from "aws-cdk-lib/aws-sqs";
 import { AttributeType, BillingMode, Table, TableEncryption } from "aws-cdk-lib/aws-dynamodb";
 import { SqsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
-import { QueueEncryption } from "aws-cdk-lib/aws-sqs";
 import { Bucket, BucketEncryption } from "aws-cdk-lib/aws-s3";
 import { Topic } from "aws-cdk-lib/aws-sns";
 import { SlackChannelConfiguration } from "aws-cdk-lib/aws-chatbot";
@@ -12,23 +11,24 @@ import { Alarm, ComparisonOperator, TreatMissingData } from "aws-cdk-lib/aws-clo
 import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { StackValidator } from "../validator/stack-validator";
+import { ConfigStackProps } from "../config";
 
 export class MailQueuesStack extends Stack {
   private slackWorkspaceId: string;
   private slackChannelId: string;
   private senderAddress: string;
 
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: Construct, id: string, props: ConfigStackProps) {
     super(scope, id, props);
 
-    this.init();
+    this.init(props);
     this.create();
   }
 
-  private init(): void {
-    this.slackWorkspaceId = this.node.tryGetContext("slackWorkspaceId");
-    this.slackChannelId = this.node.tryGetContext("slackChannelId");
-    this.senderAddress = this.node.tryGetContext("senderAddress");
+  private init(props: ConfigStackProps): void {
+    this.slackWorkspaceId = props.config.slackWorkspaceId;
+    this.slackChannelId = props.config.slackChannelId;
+    this.senderAddress = props.config.senderAddress;
 
     const stackValidator = new StackValidator(
       this.slackWorkspaceId,
@@ -104,16 +104,12 @@ export class MailQueuesStack extends Stack {
       topicName: "ErrorTopic",
     });
 
-    const errorSlackChatbotConfiguration = new SlackChannelConfiguration(
-      this,
-      "ErrorSlackChatbotConfiguration",
-      {
-        slackChannelConfigurationName: this.stackName,
-        slackWorkspaceId: this.slackWorkspaceId,
-        slackChannelId: this.slackChannelId,
-        notificationTopics: [errorTopic],
-      },
-    );
+    new SlackChannelConfiguration(this, "ErrorSlackChatbotConfiguration", {
+      slackChannelConfigurationName: this.stackName,
+      slackWorkspaceId: this.slackWorkspaceId,
+      slackChannelId: this.slackChannelId,
+      notificationTopics: [errorTopic],
+    });
 
     const dlqSizeAlarm = new Alarm(this, "DeadLetterQueueSizeAlarm", {
       metric: dlq.metricApproximateNumberOfMessagesVisible().with({
