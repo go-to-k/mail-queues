@@ -1,35 +1,34 @@
-import * as cdk from "aws-cdk-lib";
+import { App, assertions } from "aws-cdk-lib";
 import { Template } from "aws-cdk-lib/assertions";
+import { ConfigStackProps } from "../lib/config";
 import { MailQueuesStack } from "../lib/resource/mail-queues-stack";
-import _cdkJsonRaw from "../cdk.json";
-
-export type CdkJson = typeof _cdkJsonRaw;
-export type PartialContext = Partial<Pick<CdkJson, "context">["context"]>;
 
 const getTemplate = (input: {
-  slackWorkspaceId?: string;
-  slackChannelId?: string;
-  senderAddress?: string;
-  region?: string;
-}): cdk.assertions.Template => {
-  const _cdkJson: CdkJson = _cdkJsonRaw;
-  const partialContext: PartialContext = _cdkJson.context;
+  slackWorkspaceId: string;
+  slackChannelId: string;
+  senderAddress: string;
+  region: string;
+}): assertions.Template => {
   const { slackWorkspaceId, slackChannelId, senderAddress, region } = input;
 
-  partialContext.slackWorkspaceId = slackWorkspaceId;
-  partialContext.slackChannelId = slackChannelId;
-  partialContext.senderAddress = senderAddress;
-  partialContext.region = region;
+  const testSlackWorkspaceId = slackWorkspaceId;
+  const testSlackChannelId = slackChannelId;
+  const testSenderAddress = senderAddress;
+  const testRegion = region;
 
-  const app = new cdk.App({
-    context: partialContext,
-  });
-  const regionContext = app.node.tryGetContext("region") ?? "";
-  const stack = new MailQueuesStack(app, "MailQueuesStack", {
+  const testConfigStackProps: ConfigStackProps = {
     env: {
-      region: regionContext,
+      region: testRegion,
     },
-  });
+    config: {
+      slackWorkspaceId: testSlackWorkspaceId,
+      slackChannelId: testSlackChannelId,
+      senderAddress: testSenderAddress,
+    },
+  };
+
+  const app = new App();
+  const stack = new MailQueuesStack(app, "MailQueuesStack", testConfigStackProps);
   return Template.fromStack(stack);
 };
 
@@ -102,21 +101,6 @@ describe("Fine-grained Assertions Tests", () => {
 describe("Validation Tests", () => {
   const region = "ap-northeast-1";
 
-  test("slackWorkspaceId is undefined", () => {
-    const input = {
-      slackWorkspaceId: undefined,
-      slackChannelId: "slackChannelId",
-      senderAddress: "senderAddress@test.test",
-      region,
-    };
-
-    expect(() => {
-      getTemplate(input);
-    }).toThrow(
-      /\[AWS::Chatbot::SlackChannelConfiguration\] is missing required property: slackWorkspaceId/,
-    );
-  });
-
   test("slackWorkspaceId is empty", () => {
     const input = {
       slackWorkspaceId: "",
@@ -132,21 +116,6 @@ describe("Validation Tests", () => {
     );
   });
 
-  test("slackChannelId is undefined", () => {
-    const input = {
-      slackWorkspaceId: "slackWorkspaceId",
-      slackChannelId: undefined,
-      senderAddress: "senderAddress@test.test",
-      region,
-    };
-
-    expect(() => {
-      getTemplate(input);
-    }).toThrow(
-      /\[AWS::Chatbot::SlackChannelConfiguration\] is missing required property: slackChannelId/,
-    );
-  });
-
   test("slackChannelId is empty", () => {
     const input = {
       slackWorkspaceId: "slackWorkspaceId",
@@ -159,21 +128,6 @@ describe("Validation Tests", () => {
       getTemplate(input);
     }).toThrow(
       /{"issues":\[{"code":"too_small","minimum":1,"type":"string","inclusive":true,"message":"String must contain at least 1 character\(s\)","path":\["slackChannelId"\]}\],"name":"ZodError"}/,
-    );
-  });
-
-  test("senderAddress is undefined", () => {
-    const input = {
-      slackWorkspaceId: "slackWorkspaceId",
-      slackChannelId: "slackChannelId",
-      senderAddress: undefined,
-      region,
-    };
-
-    expect(() => {
-      getTemplate(input);
-    }).toThrow(
-      /{"issues":\[{"code":"invalid_type","expected":"string","received":"undefined","path":\["senderAddress"\],"message":"Required"}\],"name":"ZodError"}/,
     );
   });
 

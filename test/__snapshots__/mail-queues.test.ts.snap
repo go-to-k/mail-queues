@@ -177,7 +177,7 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-ap-northeast-1",
           },
-          "S3Key": "d05e40680875f33807db4f69bc3f49cd129b351c3526c12ad8d46d71d3c9fe08.zip",
+          "S3Key": "1e6539d8743c54b38bf16a76f00aa041c4a2be4f1f992ed6c484512690ed04b8.zip",
         },
         "Environment": Object {
           "Variables": Object {
@@ -210,8 +210,8 @@ Object {
           "Statement": Array [
             Object {
               "Action": Array [
-                "s3:GetBucket*",
                 "s3:GetObject*",
+                "s3:GetBucket*",
                 "s3:List*",
               ],
               "Effect": "Allow",
@@ -241,17 +241,17 @@ Object {
             Object {
               "Action": Array [
                 "dynamodb:BatchGetItem",
-                "dynamodb:BatchWriteItem",
-                "dynamodb:ConditionCheckItem",
-                "dynamodb:DeleteItem",
-                "dynamodb:DescribeTable",
-                "dynamodb:GetItem",
                 "dynamodb:GetRecords",
                 "dynamodb:GetShardIterator",
-                "dynamodb:PutItem",
                 "dynamodb:Query",
+                "dynamodb:GetItem",
                 "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:DescribeTable",
               ],
               "Effect": "Allow",
               "Resource": Array [
@@ -268,19 +268,19 @@ Object {
             },
             Object {
               "Action": Array [
-                "SES:SendRawEmail",
                 "ses:SendEmail",
+                "SES:SendRawEmail",
               ],
               "Effect": "Allow",
               "Resource": "*",
             },
             Object {
               "Action": Array [
+                "sqs:ReceiveMessage",
                 "sqs:ChangeMessageVisibility",
+                "sqs:GetQueueUrl",
                 "sqs:DeleteMessage",
                 "sqs:GetQueueAttributes",
-                "sqs:GetQueueUrl",
-                "sqs:ReceiveMessage",
               ],
               "Effect": "Allow",
               "Resource": Object {
