@@ -28,11 +28,6 @@
     "@aws-cdk/core:validateSnapshotRemovalPolicy": true,
     "@aws-cdk/aws-codepipeline:crossAccountKeyAliasStackSafeResourceName": true,
     "@aws-cdk/aws-s3:createDefaultLoggingPolicy": true,
-    "@aws-cdk/core:target-partitions": ["aws", "aws-cn"],
-
-    "region": "ap-northeast-1",
-    "slackWorkspaceId": "*********",
-    "slackChannelId": "***********",
-    "senderAddress": "***@***.***"
+    "@aws-cdk/core:target-partitions": ["aws", "aws-cn"]
   }
 }

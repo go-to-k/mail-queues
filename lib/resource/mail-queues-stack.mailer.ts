@@ -126,7 +126,7 @@ export const handler: SQSHandler = async (event: SQSEvent) => {
   return sqsBatchResponse;
 };
 
-const lockTable = async (lockMailKey: string, expirationUnixTime: number): Promise<boolean> => {
+const lockTable = (lockMailKey: string, expirationUnixTime: number): Promise<boolean> => {
   if (!lockMailKey) {
     throw new Error("Empty lockMailKey.");
   }
@@ -143,7 +143,7 @@ const lockTable = async (lockMailKey: string, expirationUnixTime: number): Promi
     },
   };
 
-  return await docClient
+  return docClient
     .put(params)
     .promise()
     .then(() => {
@@ -160,7 +160,7 @@ const lockTable = async (lockMailKey: string, expirationUnixTime: number): Promi
     });
 };
 
-const unlockTable = async (lockMailKey: string): Promise<boolean> => {
+const unlockTable = (lockMailKey: string): Promise<boolean> => {
   const params: DynamoDB.DocumentClient.DeleteItemInput = {
     TableName: tableName,
     Key: {
@@ -172,14 +172,14 @@ const unlockTable = async (lockMailKey: string): Promise<boolean> => {
     },
   };
 
-  return await docClient
+  return docClient
     .delete(params)
     .promise()
     .then(() => {
       console.log("Unlock Success.");
       return true;
     })
-    .catch((e) => {
+    .catch((_e) => {
       console.error("Other DynamoDB Unlock Error.");
       return false;
     });

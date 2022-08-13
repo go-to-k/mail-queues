@@ -1,13 +1,9 @@
 #!/usr/bin/env node
 import "source-map-support/register";
-import * as cdk from "aws-cdk-lib";
+import { App } from "aws-cdk-lib";
 import { MailQueuesStack } from "../lib/resource/mail-queues-stack";
+import { configStackProps } from "../lib/config";
 
-const app = new cdk.App();
-const region = app.node.tryGetContext("region") ?? "";
+const app = new App();
 
-new MailQueuesStack(app, "MailQueuesStack", {
-  env: {
-    region: region,
-  },
-});
+new MailQueuesStack(app, "MailQueuesStack", configStackProps);
