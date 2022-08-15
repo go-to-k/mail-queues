@@ -31,7 +31,7 @@ Change parameters for this service in [cdk.json](./cdk.json).
 
 ## Deploy
 
-- `cdk deploy`
+- `npx cdk deploy`
 
 ## How to use
 
