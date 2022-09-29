@@ -62,6 +62,9 @@ export class MailQueuesStack extends Stack {
         TTL_SEC_FOR_TABLE: "345600", // seconds
         SENDER_ADDRESS: this.senderAddress,
       },
+      bundling: {
+        forceDockerBundling: false,
+      },
     });
 
     attachedFileBucket.grantRead(mailerHandler);
