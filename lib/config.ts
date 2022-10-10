@@ -1,13 +1,8 @@
 import { StackProps } from "aws-cdk-lib";
-
-export interface Config {
-  slackWorkspaceId: string;
-  slackChannelId: string;
-  senderAddress: string;
-}
+import { StackInput } from "./types/stack-input";
 
 export interface ConfigStackProps extends StackProps {
-  config: Config;
+  config: StackInput;
 }
 
 export const configStackProps: ConfigStackProps = {

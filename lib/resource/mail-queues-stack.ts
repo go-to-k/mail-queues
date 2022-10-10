@@ -12,11 +12,10 @@ import { SnsAction } from "aws-cdk-lib/aws-cloudwatch-actions";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 import { StackValidator } from "../validator/stack-validator";
 import { ConfigStackProps } from "../config";
+import { StackInput } from "../types/stack-input";
 
 export class MailQueuesStack extends Stack {
-  private slackWorkspaceId: string;
-  private slackChannelId: string;
-  private senderAddress: string;
+  private stackInput: StackInput;
 
   constructor(scope: Construct, id: string, props: ConfigStackProps) {
     super(scope, id, props);
@@ -26,15 +25,13 @@ export class MailQueuesStack extends Stack {
   }
 
   private init(props: ConfigStackProps): void {
-    this.slackWorkspaceId = props.config.slackWorkspaceId;
-    this.slackChannelId = props.config.slackChannelId;
-    this.senderAddress = props.config.senderAddress;
+    this.stackInput = {
+      slackWorkspaceId: props.config.slackWorkspaceId,
+      slackChannelId: props.config.slackChannelId,
+      senderAddress: props.config.senderAddress,
+    };
 
-    const stackValidator = new StackValidator(
-      this.slackWorkspaceId,
-      this.slackChannelId,
-      this.senderAddress,
-    );
+    const stackValidator = new StackValidator(this.stackInput);
     this.node.addValidation(stackValidator);
   }
 
@@ -60,7 +57,7 @@ export class MailQueuesStack extends Stack {
         QUEUE_LOCK_TABLE_NAME: table.tableName,
         ATTACHED_FILE_BUCKET_NAME: attachedFileBucket.bucketName,
         TTL_SEC_FOR_TABLE: "345600", // seconds
-        SENDER_ADDRESS: this.senderAddress,
+        SENDER_ADDRESS: this.stackInput.senderAddress,
       },
       bundling: {
         forceDockerBundling: false,
@@ -109,8 +106,8 @@ export class MailQueuesStack extends Stack {
 
     new SlackChannelConfiguration(this, "ErrorSlackChatbotConfiguration", {
       slackChannelConfigurationName: this.stackName,
-      slackWorkspaceId: this.slackWorkspaceId,
-      slackChannelId: this.slackChannelId,
+      slackWorkspaceId: this.stackInput.slackWorkspaceId,
+      slackChannelId: this.stackInput.slackChannelId,
       notificationTopics: [errorTopic],
     });
 
