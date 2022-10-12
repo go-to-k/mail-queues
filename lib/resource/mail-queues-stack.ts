@@ -25,11 +25,7 @@ export class MailQueuesStack extends Stack {
   }
 
   private init(props: ConfigStackProps): void {
-    this.stackInput = {
-      slackWorkspaceId: props.config.slackWorkspaceId,
-      slackChannelId: props.config.slackChannelId,
-      senderAddress: props.config.senderAddress,
-    };
+    this.stackInput = props.config;
 
     const stackValidator = new StackValidator(this.stackInput);
     this.node.addValidation(stackValidator);
