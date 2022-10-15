@@ -30,9 +30,16 @@ export class MailQueuesStack extends Stack {
 
   private create() {
     const attachedFileBucket = new Bucket(this, "AttachedFileBucket", {
-      encryption: BucketEncryption.KMS_MANAGED,
+      encryption: BucketEncryption.S3_MANAGED,
+      removalPolicy: RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+      lifecycleRules: [
+        {
+          id: "delete-lifecycle",
+          expiration: Duration.days(400),
+        },
+      ],
     });
-    attachedFileBucket.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     const table = new Table(this, "QueueLockTable", {
       partitionKey: {
@@ -43,8 +50,8 @@ export class MailQueuesStack extends Stack {
       pointInTimeRecovery: true,
       encryption: TableEncryption.DEFAULT,
       timeToLiveAttribute: "ExpirationUnixTime",
+      removalPolicy: RemovalPolicy.DESTROY,
     });
-    table.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     const mailerHandler = new NodejsFunction(this, "mailer", {
       environment: {
