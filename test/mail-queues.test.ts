@@ -66,7 +66,7 @@ describe("Fine-grained Assertions Tests", () => {
   });
 
   test("IAM Role created", () => {
-    template.resourceCountIs("AWS::IAM::Role", 2);
+    template.resourceCountIs("AWS::IAM::Role", 3); // +1 for "autoDeleteObjects: true" in the Bucket
   });
 
   test("IAM Policy created", () => {
@@ -74,7 +74,7 @@ describe("Fine-grained Assertions Tests", () => {
   });
 
   test("Lambda created", () => {
-    template.resourceCountIs("AWS::Lambda::Function", 1);
+    template.resourceCountIs("AWS::Lambda::Function", 2); // +1 for "autoDeleteObjects: true" in the Bucket
   });
 
   test("EventSourceMapping created", () => {
