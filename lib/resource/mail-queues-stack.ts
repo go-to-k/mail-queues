@@ -70,7 +70,7 @@ export class MailQueuesStack extends Stack {
     const monitoring = new MailQueuesMonitoring(this, "Monitoring", {
       slackChannelConfigurationName: this.stackName,
       slackWorkspaceId: this.stackInput.slackWorkspaceId,
-      slackChannelId: this.stackInput.slackWorkspaceId,
+      slackChannelId: this.stackInput.slackChannelId,
     });
 
     const queue = new Queue(this, "MailQueue", {
