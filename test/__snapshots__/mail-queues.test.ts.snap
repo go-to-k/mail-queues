@@ -36,7 +36,26 @@ Object {
       "Type": "AWS::S3::Bucket",
       "UpdateReplacePolicy": "Retain",
     },
-    "DeadLetterQueue9F481546": Object {
+    "MailQueue4F838B3A": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "KmsMasterKeyId": "alias/aws/sqs",
+        "ReceiveMessageWaitTimeSeconds": 10,
+        "RedrivePolicy": Object {
+          "deadLetterTargetArn": Object {
+            "Fn::GetAtt": Array [
+              "MonitoringDeadLetterQueue5C1A4660",
+              "Arn",
+            ],
+          },
+          "maxReceiveCount": 5,
+        },
+        "VisibilityTimeout": 30,
+      },
+      "Type": "AWS::SQS::Queue",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "MonitoringDeadLetterQueue5C1A4660": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
         "KmsMasterKeyId": "alias/aws/sqs",
@@ -45,11 +64,11 @@ Object {
       "Type": "AWS::SQS::Queue",
       "UpdateReplacePolicy": "Delete",
     },
-    "DeadLetterQueueSizeAlarm320E5D34": Object {
+    "MonitoringDeadLetterQueueSizeAlarmB6C2646B": Object {
       "Properties": Object {
         "AlarmActions": Array [
           Object {
-            "Ref": "ErrorTopicA0904A23",
+            "Ref": "MonitoringErrorTopic16B8889E",
           },
         ],
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
@@ -59,7 +78,7 @@ Object {
             "Name": "QueueName",
             "Value": Object {
               "Fn::GetAtt": Array [
-                "DeadLetterQueue9F481546",
+                "MonitoringDeadLetterQueue5C1A4660",
                 "QueueName",
               ],
             },
@@ -75,12 +94,12 @@ Object {
       },
       "Type": "AWS::CloudWatch::Alarm",
     },
-    "ErrorSlackChatbotConfiguration61D027E2": Object {
+    "MonitoringErrorSlackChatbotConfiguration6AB0E891": Object {
       "Properties": Object {
         "ConfigurationName": "MailQueuesStack",
         "IamRoleArn": Object {
           "Fn::GetAtt": Array [
-            "ErrorSlackChatbotConfigurationConfigurationRoleF38BD79A",
+            "MonitoringErrorSlackChatbotConfigurationConfigurationRoleEC8FD28D",
             "Arn",
           ],
         },
@@ -88,13 +107,13 @@ Object {
         "SlackWorkspaceId": "slackWorkspaceId",
         "SnsTopicArns": Array [
           Object {
-            "Ref": "ErrorTopicA0904A23",
+            "Ref": "MonitoringErrorTopic16B8889E",
           },
         ],
       },
       "Type": "AWS::Chatbot::SlackChannelConfiguration",
     },
-    "ErrorSlackChatbotConfigurationConfigurationRoleF38BD79A": Object {
+    "MonitoringErrorSlackChatbotConfigurationConfigurationRoleEC8FD28D": Object {
       "Properties": Object {
         "AssumeRolePolicyDocument": Object {
           "Statement": Array [
@@ -111,31 +130,12 @@ Object {
       },
       "Type": "AWS::IAM::Role",
     },
-    "ErrorTopicA0904A23": Object {
+    "MonitoringErrorTopic16B8889E": Object {
       "Properties": Object {
         "DisplayName": "ErrorTopic",
         "TopicName": "ErrorTopic",
       },
       "Type": "AWS::SNS::Topic",
-    },
-    "MailQueue4F838B3A": Object {
-      "DeletionPolicy": "Delete",
-      "Properties": Object {
-        "KmsMasterKeyId": "alias/aws/sqs",
-        "ReceiveMessageWaitTimeSeconds": 10,
-        "RedrivePolicy": Object {
-          "deadLetterTargetArn": Object {
-            "Fn::GetAtt": Array [
-              "DeadLetterQueue9F481546",
-              "Arn",
-            ],
-          },
-          "maxReceiveCount": 5,
-        },
-        "VisibilityTimeout": 30,
-      },
-      "Type": "AWS::SQS::Queue",
-      "UpdateReplacePolicy": "Delete",
     },
     "QueueLockTable78CED995": Object {
       "DeletionPolicy": "Retain",
