@@ -1,4 +1,4 @@
-import { CfnOutput, Duration, Stack } from "aws-cdk-lib";
+import { CfnOutput, Duration, RemovalPolicy, Stack } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Queue, QueueEncryption } from "aws-cdk-lib/aws-sqs";
@@ -32,6 +32,7 @@ export class MailQueuesStack extends Stack {
     const attachedFileBucket = new Bucket(this, "AttachedFileBucket", {
       encryption: BucketEncryption.KMS_MANAGED,
     });
+    attachedFileBucket.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     const table = new Table(this, "QueueLockTable", {
       partitionKey: {
@@ -43,6 +44,7 @@ export class MailQueuesStack extends Stack {
       encryption: TableEncryption.DEFAULT,
       timeToLiveAttribute: "ExpirationUnixTime",
     });
+    table.applyRemovalPolicy(RemovalPolicy.DESTROY);
 
     const mailerHandler = new NodejsFunction(this, "mailer", {
       environment: {

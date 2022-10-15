@@ -21,7 +21,7 @@ Object {
   },
   "Resources": Object {
     "AttachedFileBucketC6C49BBC": Object {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": Object {
         "BucketEncryption": Object {
           "ServerSideEncryptionConfiguration": Array [
@@ -34,7 +34,7 @@ Object {
         },
       },
       "Type": "AWS::S3::Bucket",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
     },
     "MailQueue4F838B3A": Object {
       "DeletionPolicy": "Delete",
@@ -138,7 +138,7 @@ Object {
       "Type": "AWS::SNS::Topic",
     },
     "QueueLockTable78CED995": Object {
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": Object {
         "AttributeDefinitions": Array [
           Object {
@@ -165,7 +165,7 @@ Object {
         },
       },
       "Type": "AWS::DynamoDB::Table",
-      "UpdateReplacePolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
     },
     "mailerE5F4EB7C": Object {
       "DependsOn": Array [
