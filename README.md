@@ -42,7 +42,7 @@ export const configStackProps: ConfigStackProps = {
 
 ## Deploy
 
-- `yarn i`
+- `yarn install`
 - `yarn cdk deploy`
 
 ## How to use
