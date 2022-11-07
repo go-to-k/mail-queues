@@ -1,5 +1,7 @@
 # mail-queues
 
+The description in **Japanese** is available on the following blog page. -> [Blog](https://go-to-k.hatenablog.com/entry/mail-queues)
+
 ## What is
 
 This service is a serverless mailing system (send-only) with a highly scalable that uses Amazon SES to send emails.
